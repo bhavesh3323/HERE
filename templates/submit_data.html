@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Submit GPS Data</title>
+</head>
+<body>
+    <h1>Submit GPS Data</h1>
+    <form method="POST" action="/gps">
+        <label for="latitude">Latitude:</label>
+        <input type="text" id="latitude" name="latitude" required><br>
+        <label for="longitude">Longitude:</label>
+        <input type="text" id="longitude" name="longitude" required><br>
+        <label for="speed">Speed:</label>
+        <input type="text" id="speed" name="speed" required><br>
+        <label for="distance">Distance:</label>
+        <input type="text" id="distance" name="distance" required><br>
+        <button type="submit">Submit</button>
+    </form>
+</body>
+</html>
