@@ -2,7 +2,50 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>GPS Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            padding: 20px;
+        }
+        h1 {
+            color: #333;
+            margin-bottom: 20px;
+        }
+        table {
+            width: 100%;
+            max-width: 800px;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+        th, td {
+            border: 1px solid #ddd;
+            padding: 12px;
+            text-align: left;
+        }
+        th {
+            background-color: #0096FF;
+            color: white;
+        }
+        tr:nth-child(even) {
+            background-color: #f2f2f2;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>GPS Data</h1>
@@ -14,15 +57,19 @@
             <th>Speed</th>
             <th>Distance</th>
         </tr>
-        {% for data in gps_data %}
+        {% for row in gps_data %}
         <tr>
-            <td>{{ data.timestamp }}</td>
-            <td>{{ data.latitude }}</td>
-            <td>{{ data.longitude }}</td>
-            <td>{{ data.speed }}</td>
-            <td>{{ data.distance }}</td>
+            <td>{{ row.timestamp }}</td>
+            <td>{{ row.latitude }}</td>
+            <td>{{ row.longitude }}</td>
+            <td>{{ row.speed }}</td>
+            <td>{{ row.distance }}</td>
         </tr>
         {% endfor %}
     </table>
+    <br>
+    <a href="/gps">Submit New GPS Data</a>
+    <br>
+    <a href="/map">View GPS Map</a>
 </body>
 </html>

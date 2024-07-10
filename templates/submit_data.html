@@ -2,20 +2,79 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Submit GPS Data</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f4f4f9;
+            margin: 100px;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+            flex-direction: column;
+        }
+        h1 {
+            color: #333;
+        }
+        form {
+            background: #fff;
+            padding: 20px;
+            border-radius: 5px;
+            box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+            max-width: 400px;
+            width: 100%;
+        }
+        label {
+            font-weight: bold;
+            color: #555;
+        }
+        input[type="text"] {
+            width: calc(100% - 20px);
+            padding: 8px 10px;
+            margin: 10px 0 20px 0;
+            display: block;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input[type="submit"] {
+            background-color: #0096FF;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            font-size: 16px;
+        }
+        input[type="submit"]:hover {
+            background-color: #218838;
+        }
+        a {
+            color: #007bff;
+            text-decoration: none;
+        }
+        a:hover {
+            text-decoration: underline;
+        }
+    </style>
 </head>
 <body>
     <h1>Submit GPS Data</h1>
-    <form method="POST" action="/gps">
-        <label for="latitude">Latitude:</label>
-        <input type="text" id="latitude" name="latitude" required><br>
-        <label for="longitude">Longitude:</label>
-        <input type="text" id="longitude" name="longitude" required><br>
-        <label for="speed">Speed:</label>
-        <input type="text" id="speed" name="speed" required><br>
-        <label for="distance">Distance:</label>
-        <input type="text" id="distance" name="distance" required><br>
-        <button type="submit">Submit</button>
+    <form action="/gps" method="post">
+        <label for="latitude">Latitude:</label><br>
+        <input type="text" id="latitude" name="latitude" required><br><br>
+        <label for="longitude">Longitude:</label><br>
+        <input type="text" id="longitude" name="longitude" required><br><br>
+        <label for="speed">Speed:</label><br>
+        <input type="text" id="speed" name="speed" readonly value="5" required><br><br>
+        <label for="distance">Distance:</label><br>
+        <input type="text" id="distance" name="distance" readonly value="5" required><br><br>
+        <input type="submit" value="Submit">
     </form>
+    <br>
+    <a href="/show_gps_data">View GPS Data</a>
 </body>
 </html>
