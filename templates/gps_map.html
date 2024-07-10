@@ -7,6 +7,7 @@
     <script src="https://js.api.here.com/v3/3.1/mapsjs-service.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-ui.js"></script>
     <script src="https://js.api.here.com/v3/3.1/mapsjs-mapevents.js"></script>
+    <script src="https://js.api.here.com/v3/3.1/mapsjs-routing.js"></script>
     <style>
         #map {
             width: 100%;
@@ -40,20 +41,46 @@
         if (gpsData.length > 0) {
             map.setCenter({lat: gpsData[0].latitude, lng: gpsData[0].longitude});
             map.setZoom(12);
-            var lineString = new H.geo.LineString();
-            gpsData.forEach(function (data) {
-                lineString.pushPoint({lat: data.latitude, lng: data.longitude});
+
+            var routingParameters = {
+                'mode': 'fastest;car',
+                'routeattributes': 'summary,shape',
+                'maneuverattributes': 'direction,action',
+                'waypoint0': `geo!${gpsData[0].latitude},${gpsData[0].longitude}`,
+                'waypoint1': `geo!${gpsData[gpsData.length-1].latitude},${gpsData[gpsData.length-1].longitude}`
+            };
+
+            var router = platform.getRoutingService();
+            router.calculateRoute(routingParameters, onResult, onError);
+
+            function onResult(result) {
+                if (result.response.route) {
+                    var route = result.response.route[0];
+                    var lineString = new H.geo.LineString();
+                    route.shape.forEach(function(point) {
+                        var parts = point.split(',');
+                        lineString.pushLatLngAlt(parts[0], parts[1]);
+                    });
+                    var polyline = new H.map.Polyline(lineString, {
+                        style: {strokeColor: 'blue', lineWidth: 4}
+                    });
+                    map.addObject(polyline);
+                    map.getViewModel().setLookAtData({bounds: polyline.getBoundingBox()});
+                }
+            }
+
+            function onError(error) {
+                console.error(error);
+                alert('Error calculating the route');
+            }
+
+            gpsData.forEach(function(data) {
                 var marker = new H.map.Marker({lat: data.latitude, lng: data.longitude});
                 map.addObject(marker);
             });
-            var polyline = new H.map.Polyline(lineString, {
-                style: {strokeColor: 'red', lineWidth: 2}
-            });
-            map.addObject(polyline);
         } else {
             alert('No GPS data available to generate the map.');
         }
-        
     </script>
 </body>
 </html>
