@@ -20,9 +20,9 @@
     <div id="map"></div>
     <script>
         var platform = new H.service.Platform({
-            apikey: 'IgYemcDJ4rslBszCiXBqwVYZLx476j6MSYA2vfaX16c'
+            apikey: 'usXINjs9twLbKzONDdHsk8hY10-XR9gjvxVmFBhhAqM'
         });
-    
+
         var defaultLayers = platform.createDefaultLayers();
         var map = new H.Map(document.getElementById('map'),
             defaultLayers.vector.normal.map, {
@@ -30,41 +30,35 @@
             zoom: 10,
             pixelRatio: window.devicePixelRatio || 1
         });
-    
+
         window.addEventListener('resize', () => map.getViewPort().resize());
-    
+
         var mapEvents = new H.mapevents.MapEvents(map);
         var behavior = new H.mapevents.Behavior(mapEvents);
         var ui = H.ui.UI.createDefault(map, defaultLayers);
-    
+
         var gpsData = {{ gps_data | tojson }};
         if (gpsData.length > 0) {
             map.setCenter({lat: gpsData[0].latitude, lng: gpsData[0].longitude});
             map.setZoom(12);
-    
-            // Draw a red polyline connecting GPS points
-            var lineString = new H.geo.LineString();
-            gpsData.forEach(function (data) {
-                lineString.pushPoint({lat: data.latitude, lng: data.longitude});
+
+            var waypoints = gpsData.map(function(data) {
+                return `geo!${data.latitude},${data.longitude}`;
             });
-    
-            var polyline = new H.map.Polyline(lineString, {
-                style: {strokeColor: 'red', lineWidth: 2}
-            });
-            map.addObject(polyline);
-    
-            // Routing service for a different route representation
+
             var routingParameters = {
                 'mode': 'fastest;car',
                 'routeattributes': 'summary,shape',
-                'maneuverattributes': 'direction,action',
-                'waypoint0': `geo!${gpsData[0].latitude},${gpsData[0].longitude}`,
-                'waypoint1': `geo!${gpsData[gpsData.length-1].latitude},${gpsData[gpsData.length-1].longitude}`
+                'maneuverattributes': 'direction,action'
             };
-    
+
+            waypoints.forEach(function(waypoint, index) {
+                routingParameters[`waypoint${index}`] = waypoint;
+            });
+
             var router = platform.getRoutingService();
             router.calculateRoute(routingParameters, onResult, onError);
-    
+
             function onResult(result) {
                 if (result.response.route) {
                     var route = result.response.route[0];
@@ -80,13 +74,12 @@
                     map.getViewModel().setLookAtData({bounds: polyline.getBoundingBox()});
                 }
             }
-    
+
             function onError(error) {
                 console.error(error);
-                alert('Error calculating the route');
+                alert('Error calculating the route: ' + error.message);
             }
-    
-            // Adding markers for each GPS data point
+
             gpsData.forEach(function(data) {
                 var marker = new H.map.Marker({lat: data.latitude, lng: data.longitude});
                 map.addObject(marker);
@@ -95,6 +88,5 @@
             alert('No GPS data available to generate the map.');
         }
     </script>
-    
 </body>
 </html>
